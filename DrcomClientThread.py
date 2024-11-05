@@ -1,3 +1,4 @@
+import datetime
 from hashlib import md5
 import os
 import platform
@@ -57,7 +58,7 @@ class DrcomClientThread(QThread):
 
         if self.IS_TEST:
             self.DEBUG = True
-            self.LOG_PATH = 'drcom_client.log'
+            self.LOG_PATH = os.path.dirname(__file__) + '/drcom_client.log'
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.bind_ip, 61440))
@@ -263,11 +264,16 @@ class DrcomClientThread(QThread):
             data += b'\x00' * 16
         return data
 
-    def __log(self, *args, **kwargs):
-        print(*args, **kwargs)
+    def __log(self, *args):
+        print(*args)
         if self.DEBUG and platform.uname().system != 'Windows':
+            formatted_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
             with open(self.LOG_PATH, 'a') as f:
-                f.write(str(self.socket) + '\n')
+                f.write(formatted_time + '\t')
+                for arg in args:
+                    f.write(str(arg) + ' ')
+                f.write('\n')
 
     def __login(self):
         i = 0

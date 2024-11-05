@@ -1,12 +1,15 @@
 from DrcomClientThread import DrcomClientThread
 
+import os
 import sys
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
 from PyQt6.QtGui import QIcon, QAction
 
 def create_tray_icon(app):
     # 创建托盘图标
-    tray_icon = QSystemTrayIcon(QIcon("icon.on.png"), app)
+    icon_path = os.path.dirname(__file__) + "/icon.on.png"
+    icon = QIcon(icon_path)
+    tray_icon = QSystemTrayIcon(icon, app)
     tray_icon.setToolTip("JLU Drcom Client")
 
     # 创建菜单
@@ -21,15 +24,6 @@ def create_tray_icon(app):
     tray_icon.show()
 
 def main():
-    drcomClientThread = DrcomClientThread(
-        b'XXXXX',
-        b'XXXXX',
-        '100.100.100.100',
-        0x112288776655,
-        b'YOUR_PC_NAME',
-        b'Linux'
-    )
-
     app = QApplication(sys.argv)
     create_tray_icon(app)
 
