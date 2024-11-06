@@ -6,6 +6,8 @@ My work is packaging these codes into a PyQt6 Application **with tray icon**.
 
 ## Configure
 
+### main.py
+
 Set your configuration in `main()` function of `main.py`:
 
 ```python3
@@ -19,9 +21,41 @@ drcomClientThread = DrcomClientThread(
 )
 ```
 
+### run.sh
+
+Replace the relative path in `run.sh` with absolute path of `main.py`.
+
 ## Auto Launch
 
-### systemd
+### add to desktop
+
+Switch to root user:
+
+```bash
+$ su
+```
+
+Complement the value `code_path` in `Exec` and `Icon`.
+
+```bash
+$ cat /usr/share/applications/jlu-drcom-client.desktop << EOF
+[Desktop Entry]
+Name=JLU-Drcom-Client
+Comment=jlu drcom client with tray icon
+Exec=/code_path/run.sh
+Terminal=false
+Type=Application
+Icon=/code_path/icon.on.png
+Categories=Network;
+EOF
+```
+
+Then use your desktop tool to set auto launching. (For GNOME, use `GNOME Tweaks Tool`)
+
+### (Deprecated) add systemd service
+
+Tip:
+Using this method may encounter some issues with environment variables.
 
 Firstly, switch to root user:
 
@@ -32,16 +66,18 @@ $ su
 Then run following commands (don't forget to complement `[Service].ExecStart`):
 
 ```bash
-$ cat > /etc/systemd/system/jlu-drcom-client.service << EOF
+$ cat > /usr/lib/systemd/system/jlu-drcom-client.service << EOF
 [Unit]
 Description=run jlu drcom client
-After=network-online.target nftables.service iptables.service
+After=network.target
 [Service]
-ExecStart=/example_path/
+ExecStart=/bin/bash /code_path/run.sh
 [Install]
 WantedBy=multi-user.target
 EOF
+
 $ systemctl daemon-reload
+
 $ systemctl enable jlu-drcom-client.service
 ```
 
