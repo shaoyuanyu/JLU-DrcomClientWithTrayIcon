@@ -1,5 +1,7 @@
 # JLU Drcom client with tray icon on Linux
 
+![client-icon](jlu-drcom.svg)
+
 All the functional codes are from [here](https://github.com/drcoms/jlu-drcom-client/blob/master/jlu-drcom-py3/newclinet-py3.py).
 
 My work is packaging these codes into a PyQt6 Application **with tray icon**.
